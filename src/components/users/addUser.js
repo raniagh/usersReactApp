@@ -1,16 +1,18 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useRef, useState } from "react";
 import Button from "../UI/button";
 import Card from "../UI/card";
 import ErrorModal from "../UI/errorModal";
 import classes from "./addUser.module.css";
 
 const AddUser = (props) => {
-  const [enteredUsername, setEnteredUsername] = useState("");
-  const [enteredAge, setEnteredAge] = useState("");
+  const nameInputRef = useRef();
+  const ageInputRef = useRef();
   const [error, setError] = useState();
 
   const addUserHandler = (event) => {
     event.preventDefault();
+    const enteredUsername = nameInputRef.current.value;
+    const enteredAge = ageInputRef.current.value;
     //trim delete all white spaces
     if (enteredUsername.trim().length === 0 || enteredAge.trim().length === 0) {
       setError({
@@ -28,14 +30,8 @@ const AddUser = (props) => {
       return;
     }
     props.onAddUser(enteredUsername, enteredAge);
-    setEnteredUsername("");
-    setEnteredAge("");
-  };
-  const changeEntredUsername = (event) => {
-    setEnteredUsername(event.target.value);
-  };
-  const changeEntredAge = (event) => {
-    setEnteredAge(event.target.value);
+    nameInputRef.current.value = "";
+    ageInputRef.current.value = "";
   };
 
   const errorHandler = () => {
@@ -53,19 +49,9 @@ const AddUser = (props) => {
       <Card className={classes.input}>
         <form onSubmit={addUserHandler}>
           <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            value={enteredUsername}
-            onChange={changeEntredUsername}
-          />
+          <input type="text" id="username" ref={nameInputRef} />
           <label htmlFor="age">Age</label>
-          <input
-            type="number"
-            id="age"
-            value={enteredAge}
-            onChange={changeEntredAge}
-          />
+          <input type="number" id="age" ref={ageInputRef} />
           <Button type="submit">Add user</Button>
         </form>
       </Card>
